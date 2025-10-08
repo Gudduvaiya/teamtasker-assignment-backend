@@ -6,13 +6,18 @@ import projectRoutes from "./routes/projectRoutes.js";
 import tasksRoutes from "./routes/taskRoutes.js";
 import commentsRoutes from "./routes/commentsRoutes.js";
 import notificationRoutes from "./routes/notificationRoutes.js";
-import { Sequelize } from "sequelize";
+import logger from "./logConfig.js";
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-await dbCon.sync(); 
+app.use((req,_res, next) => {
+  logger.info(`${req.method} ${req.url}`);
+  next();
+});
+
+await dbCon.sync();
 // dbCon.connect((err) => {
 //   if (err) {
 //     console.log(err);
