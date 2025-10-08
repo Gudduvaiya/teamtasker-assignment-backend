@@ -1,3 +1,4 @@
+import rateLimit from "express-rate-limit";
 import express from "express";
 import cors from "cors";
 import dbCon from "./db/dbConnection.js";
@@ -11,6 +12,15 @@ import logger from "./logConfig.js";
 const app = express();
 app.use(cors());
 app.use(express.json());
+
+// Rate limiter middleware
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 20, // limit each IP to 100 requests per windowMs
+  standardHeaders: true,
+  legacyHeaders: false,
+});
+app.use(limiter);
 
 app.use((req,_res, next) => {
   logger.info(`${req.method} ${req.url}`);
